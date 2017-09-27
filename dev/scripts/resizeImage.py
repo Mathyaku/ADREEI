@@ -4,7 +4,6 @@ Created on Tue Sep 26 19:48:20 2017
 
 @author: Matheus
 """
-import PIL
 from PIL import Image
 from scipy import misc
 import numpy as np
