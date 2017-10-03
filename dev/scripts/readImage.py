@@ -45,7 +45,7 @@ def xTest():
         img = Image.open("../vba/test/" + imgName)
     
         #converting img to array
-        imgRGB = np.asarray( img, dtype="float32" )
+        imgRGB = np.asarray( img, dtype="float32")
         
         # save resized image 
         x_test.append(imgRGB)    
