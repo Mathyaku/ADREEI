@@ -16,7 +16,7 @@ def storeImages():
     pictureNames = os.listdir("../train")
     
     # creating the directory
-    os.makedirs('../vba')
+    os.makedirs('../vba/train')
     
     for imgName in pictureNames:
         
@@ -24,8 +24,8 @@ def storeImages():
         img = Image.open("../train/" + imgName)
     
         # setting dimensions
-        width = 640
-        height = 480
+        width = 320 #640
+        height = 240 #480
         
         # resizing the img
         imgResized = img.resize((width, height), Image.NEAREST)
@@ -34,7 +34,7 @@ def storeImages():
         imgRGB = np.array(imgResized)
         
         # save resized image 
-        misc.imsave("../vba/" + imgName, imgRGB)
+        misc.imsave("../vba/train/" + imgName, imgRGB)
         
         # visualization
         #plt.imshow(imgRGB)
