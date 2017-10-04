@@ -9,14 +9,12 @@ import numpy as np
 import os
 import csv
 
-def xTrain():
+def xTrain(width, height):
    
     # importing all name of imgs
     pictureNames = os.listdir("../vba/train")
     
     #list of imgs
-    width = 160 #640
-    height = 120 #480
     
     x_train = np.zeros( (len(pictureNames),height,width,3), dtype="float32" )
     

@@ -15,8 +15,11 @@ from keras.datasets import mnist
 
 import readImage
  
+width = 160
+height = 120
+
 # Load pre-shuffled MNIST data into train and test sets
-xData = readImage.xTrain()
+xData = readImage.xTrain(width, height)
 
 iTrain = round(len(xData)*0.7)
 iTest = len(xData) - iTrain
@@ -46,9 +49,9 @@ Y_test = np_utils.to_categorical(y_test, nClass)
  
 # 7. Define model architecture
 model = Sequential()
- 
-model.add(Convolution2D(32, [5, 5], activation='relu', input_shape=(120,160,3)))
-model.add(Convolution2D(32, [5, 5], activation='relu'))
+
+model.add(Convolution2D(64, [3, 3], activation='relu', input_shape=(height,width,3)))
+model.add(Convolution2D(64, [3, 3], activation='relu'))
 model.add(MaxPooling2D(pool_size=(2,2)))
 model.add(Dropout(0.25))
  
@@ -64,7 +67,7 @@ model.compile(loss='categorical_crossentropy',
  
 # 9. Fit model on training data
 model.fit(X_train, Y_train, 
-          batch_size=32, nb_epoch=1, verbose=1)
+          batch_size=64, nb_epoch=1, verbose=1)
  
 # 10. Evaluate model on test data
 score = model.evaluate(X_test, Y_test, verbose=0)
