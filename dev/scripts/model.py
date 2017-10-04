@@ -40,9 +40,6 @@ nClass = 2
 Y_train = np_utils.to_categorical(y_train, nClass)
 Y_test = np_utils.to_categorical(y_test, nClass)
 
-print(Y_train.shape)
-# (60000, 10)
-
 # 6. Preprocess class labels
 Y_train = np_utils.to_categorical(y_train, nClass)
 Y_test = np_utils.to_categorical(y_test, nClass)
@@ -50,8 +47,8 @@ Y_test = np_utils.to_categorical(y_test, nClass)
 # 7. Define model architecture
 model = Sequential()
  
-model.add(Convolution2D(32, [24, 32], activation='relu', input_shape=(240,320,3)))
-model.add(Convolution2D(32, [24, 32], activation='relu'))
+model.add(Convolution2D(32, [5, 5], activation='relu', input_shape=(120,160,3)))
+model.add(Convolution2D(32, [5, 5], activation='relu'))
 model.add(MaxPooling2D(pool_size=(2,2)))
 model.add(Dropout(0.25))
  

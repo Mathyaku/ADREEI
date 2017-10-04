@@ -15,7 +15,10 @@ def xTrain():
     pictureNames = os.listdir("../vba/train")
     
     #list of imgs
-    x_train = np.zeros( (len(pictureNames),240,320,3), dtype="float32" )
+    width = 160 #640
+    height = 120 #480
+    
+    x_train = np.zeros( (len(pictureNames),height,width,3), dtype="float32" )
     
     
     for i,imgName in enumerate(pictureNames):
@@ -24,7 +27,7 @@ def xTrain():
         img = Image.open("../vba/train/" + imgName)
     
         #converting img to array
-        imgRGB = np.asarray( img, dtype="float32" )/255
+        imgRGB = np.asarray(img, dtype="float32")/255
         
         # save resized image 
         x_train[i] = (imgRGB)
