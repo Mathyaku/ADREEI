@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ProjectsViewInfo>
-	<DiagramOpenInfos activeDiagramId="tONBA3qAU0gKKAY8">
-		<Info bounds="Re:0.0,0.0,1534.0,669.0" diagramId="tONBA3qAU0gKKAY8" maximized="true" offsetX="0" offsetY="0"/>
+	<DiagramOpenInfos activeDiagramId="Q1vxA3qAU0gKKAZ3">
+		<Info bounds="Re:0.0,0.0,0.0,0.0" diagramId="tONBA3qAU0gKKAY8" maximized="true" offsetX="0" offsetY="0"/>
+		<Info bounds="Re:0.0,0.0,1534.0,669.0" diagramId="Q1vxA3qAU0gKKAZ3" maximized="true" offsetX="0" offsetY="124"/>
+		<Info bounds="Re:0.0,0.0,0.0,0.0" diagramId="iqLTA3qAU0gKKAWo" maximized="true" offsetX="0" offsetY="0"/>
+		<Info bounds="Re:0.0,0.0,0.0,0.0" diagramId=".iqzA3qAU0gKKAW3" maximized="true" offsetX="0" offsetY="0"/>
+		<Info bounds="Re:0.0,0.0,0.0,0.0" diagramId="0exlJ3qEspHqvRDi" maximized="true" offsetX="0" offsetY="0"/>
 	</DiagramOpenInfos>
 	<DiagramLastActivated>
-		<Diagram id="tONBA3qAU0gKKAY8" time="1506468349912"/>
+		<Diagram id="Q1vxA3qAU0gKKAZ3" time="1508801680971"/>
+		<Diagram id="0exlJ3qEspHqvRDi" time="1508692005931"/>
+		<Diagram id="iqLTA3qAU0gKKAWo" time="1508691959277"/>
+		<Diagram id="tONBA3qAU0gKKAY8" time="1507070309396"/>
+		<Diagram id=".iqzA3qAU0gKKAW3" time="1507070309318"/>
 		<Diagram id="Use Case Statement" time="0"/>
 		<Diagram id="UeXceler Use Case" time="0"/>
 		<Diagram id="User Story" time="0"/>
