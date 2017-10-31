@@ -8,6 +8,8 @@ from PIL import Image
 import numpy as np
 import os
 import csv
+import glob
+import shutil
 
 def xTrain(width, height):
    
@@ -25,7 +27,7 @@ def xTrain(width, height):
         img = Image.open("../vba/train/" + imgName)
     
         #converting img to array
-        imgRGB = np.asarray(img, dtype="float32")/255
+        imgRGB = np.asarray(img, dtype="float32") #/255
         
         # save resized image 
         x_train[i] = (imgRGB)
@@ -59,7 +61,50 @@ def yTrain():
     reader = csv.reader(ifile)
     y_train = []
     next(reader)
+    
     for row in reader:
-        y_train.append(int(row[1]))
-        
-    return y_train
+        y_train.append( int(row[1]) )
+    
+    myarray = np.asarray(y_train, dtype="int")
+    return myarray
+
+def generateTrainAndTestImages():
+ 
+    ifile = open('train_labels.csv', "rt")
+    reader = csv.reader(ifile)
+    y_train = []
+    y_names = []
+    next(reader)
+    
+    for row in reader:
+        y_train.append( int(row[1]) )
+        y_names.append( (row[0])+'.jpg' )
+    
+    myarray = np.asarray(y_train, dtype="int")
+    
+    indexes = np.random.permutation(myarray.shape[0])
+    iTraining, iTesting = indexes[:round(len(myarray)*0.7)], indexes[round(len(myarray)*0.7):]
+
+    
+    for i in iTraining:
+        if(myarray[i] == 1):
+            shutil.copy("../train/" + y_names[i], "train/1")
+        else:
+            shutil.copy("../train/" + y_names[i], "train/0")
+    
+    for i in iTesting:
+        if(myarray[i] == 1):
+            shutil.copy("../train/" + y_names[i], "test/1")
+        else:
+            shutil.copy("../train/" + y_names[i], "test/0")
+    
+
+def removeImages():
+    shutil.rmtree('train/0/')
+    shutil.rmtree('train/1/')
+    shutil.rmtree('test/0/')
+    shutil.rmtree('test/1/')
+    os.makedirs('train/0')
+    os.makedirs('train/1')
+    os.makedirs('test/0')
+    os.makedirs('test/1')

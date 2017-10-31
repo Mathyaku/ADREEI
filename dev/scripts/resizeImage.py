@@ -24,8 +24,8 @@ def storeImages():
         img = Image.open("../train/" + imgName)
     
         # setting dimensions
-        width = 160 #640
-        height = 120 #480
+        width = 256
+        height = 256
         
         # resizing the img
         imgResized = img.resize((width, height), Image.NEAREST)
