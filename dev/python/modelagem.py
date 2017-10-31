@@ -7,6 +7,8 @@ Created on Tue Oct 10 21:54:36 2017
 
 from random import random 
 import numpy as np
+from kmeans import clusterization
+from distances import distances
 from pandas import DataFrame
 
 #Definição de variaveis
@@ -88,16 +90,19 @@ while(not optimal):
     #Calcula distancias entre os pontos
     matrix_distances = distances(matriz_pontos)
     
-    #Se a distancia entre quaisquer dois pontos for maior que a maxima do drone, não continua
-    if np.any([[(x > distancia and x != float('inf')) for x in y]  for y in matrix_distances]):
-        continue
+    #para cada cluster
+    for i in unique_labels:
+        matrix_distances = distances((df[df['labels'] == i]).as_matrix())
+        #Se a distancia entre quaisquer dois pontos for maior que a maxima do drone, não continua
+        if np.any([[(x > distancia and x != float('inf')) for x in y]  for y in matrix_distances]):
+            continue
     
     #starter_point = [round(random()) for x in range(num_pontos)]
     #matriz_conexoes = [[random() for x in range(num_pontos)] for y in range(num_pontos)]
-    for i in unique_labels:
+    for label in unique_labels:
         base_distance = 1
-        matrix_distances = distances((df[df['labels'] == i]).as_matrix())
-        file = open('testfile' + str(i) + '.lp', 'w') 
+        matrix_distances = distances((df[df['labels'] == label]).as_matrix())
+        file = open('testfile' + str(label) + '.lp', 'w') 
         
         #Função objetivo
         file.write('min: ' + str(peso_distancia) + 'dist_total; \n\n\n') #+  str(peso_tempo) + 'tempo_total \n\n\n') 
@@ -128,7 +133,7 @@ while(not optimal):
             str_lp_total_neg  = str_lp_total_neg
             file.write(str_lp_total_pos  + ';\n')
             file.write(str_lp_total_neg + ";\n\n")
-        file.write(str_lp + '\n')
+        file.write('\n')
         
         
         file.write('//Visitar cada ponto uma unica vez \n')
@@ -144,7 +149,7 @@ while(not optimal):
             file.write(str_lp_total_pos  + ';\n')
             file.write(str_lp_total_neg + ";\n\n")
         file.write(str_lp + '\n')
-        #str_lp_total_pos  = str_lp_total_pos + '>=' + str(num_pontos)
+#        #str_lp_total_pos  = str_lp_total_pos + '>=' + str(num_pontos)
         #str_lp_total_neg  = str_lp_total_neg + '>= -' + str(num_pontos)
         
     #    file.write('//Visitar exatamente um ponto duas vezes \n')
@@ -165,15 +170,15 @@ while(not optimal):
         str_lp =  str(1000) + '>= dist_total'
         file.write(str_lp + ';\n')
         
-        for i in range(0, num_pontos):
-            for j in range(0, num_pontos):
-                file.write('bin X[' + str(i) + '][' + str(j) + '];\n')
+        for i in range(0, len(matrix_distances)):
+            for j in range(0, len(matrix_distances)):
+                file.write('int X[' + str(i) + '][' + str(j) + '];\n')
         
         
         file.close()
-        tempo = 300
+        tempo = 300000
         import os
-        status = os.system("lp_solve -s -timeout " + str(tempo) + " testfile.lp > saida" + str(i) + ".txt")
+        status = os.system("lp_solve -s -timeout " + str(tempo) + " testfile" + str(label) + ".lp > saida" + str(label) + ".txt")
     #    command = [];
     #[status,cmdout] = system(command);
     
