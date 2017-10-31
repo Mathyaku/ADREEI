@@ -26,15 +26,7 @@ def clusterization (X, k):
 #        ax = Axes3D(fig, rect=[0, 0, .95, 1], elev=48, azim=134)
         est.fit(X)
         labels = est.labels_
-    import matplotlib.pyplot as plt
-#    plt.plot([1,2,3,4], [1,4,9,16], 'ro')
-    plt.axis([55, 70, 0, 10])
-    plt.show()
-    from numpy import array
-    color = ['ro', 'bo', 'co', 'go', 'yo']
-    for i in range(k):
-        plt.plot(df[df['labels'] == 0][k], df[df['labels'] == 0][k], color[0])
-    plt.show()
+
         
     
     return labels
