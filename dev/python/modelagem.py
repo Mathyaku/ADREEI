@@ -5,12 +5,18 @@ Created on Tue Oct 10 21:54:36 2017
 @author: Raissa
 """
 
-from random import random 
+#from random import random 
 import numpy as np
 from kmeans import clusterization
 from distances import distances
 from pandas import DataFrame
+import pandas as pd
+from read_output import read_output 
+import matplotlib.pyplot as plt
 
+#def gen_paths(index_threats_list): 
+
+index_threats_list= lista    
 #Definição de variaveis
 peso_distancia = 1
 peso_tempo = 0
@@ -29,59 +35,31 @@ if vel_med_drone != "" and max_flight_time != "":
     distancia = vel_med_drone * max_flight_time
 else:
     distancia = 100
-        
-n = 200
-#pontos aleatorios
-mu_lat, sigma_lat = -4.17, 3
-mu_long, sigma_long = -62, 4 # mean and standard deviation
-s_lat = np.random.normal(mu_lat, sigma_lat, n)#, np.random.normal(mu_long, sigma_long, 222)]
-s_long = np.random.normal(mu_long, sigma_long, n)
 
-#Restrição de numero de pontos
-#numpontos  <= max_carga_drone/peso_inseticida
-#matriz_pontos = [[random() for x in range(2)] for y in range(num_pontos)]
-matriz_pontos = [[0 for x in range(2)] for y in range(len(s_long))]
-for i in range(len(s_long)):
-    matriz_pontos[i] = [s_long[i], s_lat[i]]
+#Get threat lat lon positions
+df = pd.read_pickle("positions.pkl")
+df = df.loc[index_threats_list,:]
+
+matriz_pontos = np.asmatrix(df)
 
 optimal = False
 k = 4
+drone_paths = []
+#    colors = ['black', 'bo', 'co', 'go', 'yo', 'mo', 'ko']
 while(not optimal):
     k = k + 1
     #Clusterização
     labels = clusterization (matriz_pontos, k)
-    df = DataFrame(matriz_pontos)
     df['labels'] = labels
     
-    color = ['ro', 'bo', 'co', 'go', 'yo', 'mo', 'ko']
-    import matplotlib.pyplot as plt
-#    plt.plot([1,2,3,4], [1,4,9,16], 'ro')
-#    plt.axis([55, 70, 0, 10])
-#    plt.show()
-#    from numpy import array
-#    for i in range(k):
-#        plt.plot(df[df['labels'] == k][0], df[df['labels'] == k][1], color[k])
-#    plt.show()
-#    
-    def unique(labels):
-        output = []
-        for x in labels:
-            if x not in output:
-                output.append(x)
-        print(output)
-        return output
+    color = ['r', 'b', 'c', 'g', 'y', 'm', 'k']
     
     unique_labels = unique(labels)
     plt.axis([-50, -75, 10, -15])
     for i in unique_labels:
-            plt.plot(df[df['labels'] == i][0], df[df['labels'] == i][1], color[i%len(color)])
+            plt.plot(df[df['labels'] == i][0], df[df['labels'] == i][1], color[i%len(color)]+ 'o')
     plt.show()
-    
-    def count_itens(df, unique_labels):
-        count = [] 
-        for i in unique_labels:
-            count.append(len(df[df['labels'] == i]))
-        return count
+
      
     #Se tivermos mais que max_pontos
     if any([x > max_pontos for x in count_itens(df, unique_labels)]):
@@ -99,9 +77,16 @@ while(not optimal):
     
     #starter_point = [round(random()) for x in range(num_pontos)]
     #matriz_conexoes = [[random() for x in range(num_pontos)] for y in range(num_pontos)]
+    
+    from random import randint
+    colors = []
+    
+    for i in range(10):
+        colors.append('%06X' % randint(0, 0xFFFFFF))
     for label in unique_labels:
         base_distance = 1
-        matrix_distances = distances((df[df['labels'] == label]).as_matrix())
+        cluster_points = (df[df['labels'] == label]).as_matrix()
+        matrix_distances = distances(cluster_points)
         file = open('testfile' + str(label) + '.lp', 'w') 
         
         #Função objetivo
@@ -156,12 +141,12 @@ while(not optimal):
     #    
     
         for j in range(0, len(matrix_distances)):
-            for i in range(0, num_pontos):
+            for i in range(0, len(matrix_distances)):
                 str_lp = '1 >= + X[' + str(j) + '][' + str(i) + '] + X[' + str(i) + '][' + str(j) + ']'
                 file.write(str_lp + ';\n')
     
         for j in range(0, len(matrix_distances)):
-            for i in range(0, num_pontos):
+            for i in range(0, len(matrix_distances)):
                 str_lp = 'X[' + str(i) + '][' + str(j) + '] >= 0'
                 file.write(str_lp + ';\n')
             
@@ -180,8 +165,61 @@ while(not optimal):
         import os
         status = os.system("lp_solve -s -timeout " + str(tempo) + " testfile" + str(label) + ".lp > saida" + str(label) + ".txt")
     #    command = [];
-    #[status,cmdout] = system(command);
-    
+    #[status,cmdout] = system(command)
+        path_data = read_output("saida" + str(label) + ".txt")
+        for i in range( len(  path_data ) ):
+            drone_paths.append(
+                dict(
+                    type = 'scattergeo',
+                    locationmode = 'ISO-3',
+                    lon = [ cluster_points[i][0], cluster_points[path_data[i].index(1)][0] ],
+                    lat = [ cluster_points[i][1], cluster_points[path_data[i].index(1)][1] ],
+                    mode = 'lines',
+                    line = dict(
+                        width = 1,
+                        color = colors[label%len(colors)],
+                    ),
+#                        opacity = float(cluster_points['cnt'][i])/float(df_flight_paths['cnt'].max()),
+                )
+            )
+        
         
         optimal = 1
+            
+def count_itens(df, unique_labels):
+    count = [] 
+    for i in unique_labels:
+        count.append(len(df[df['labels'] == i]))
+    return count
         
+def unique(labels):
+    output = []
+    for x in labels:
+        if x not in output:
+            output.append(x)
+    print(output)
+    return output
+####### Cemiterio de codigo ###############
+#    n = 200
+#    #pontos aleatorios
+#    mu_lat, sigma_lat = -4.17, 3
+#    mu_long, sigma_long = -62, 4 # mean and standard deviation
+#    s_lat = np.random.normal(mu_lat, sigma_lat, n)#, np.random.normal(mu_long, sigma_long, 222)]
+#    s_long = np.random.normal(mu_long, sigma_long, n)
+    
+    #Restrição de numero de pontos
+    #numpontos  <= max_carga_drone/peso_inseticida
+    #matriz_pontos = [[random() for x in range(2)] for y in range(num_pontos)]
+#    matriz_pontos = [[0 for x in range(2)] for y in range(len(s_long))]
+#    for i in range(len(s_long)):
+#        matriz_pontos[i] = [s_long[i], s_lat[i]]
+            
+            
+    #    plt.plot([1,2,3,4], [1,4,9,16], 'ro')
+    #    plt.axis([55, 70, 0, 10])
+    #    plt.show()
+    #    from numpy import array
+    #    for i in range(k):
+    #        plt.plot(df[df['labels'] == k][0], df[df['labels'] == k][1], color[k])
+    #    plt.show()
+    #                

@@ -95,4 +95,5 @@ airports = [ dict(
         
     
 fig = dict( data= airports, layout=layout )
-py.iplot( fig, filename='d3-flight-brazil_1')
+fig = dict( data=drone_paths , layout=layout )
+py.iplot( fig, filename='d3-path-brazil_1')
