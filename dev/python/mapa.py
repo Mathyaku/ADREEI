@@ -5,6 +5,7 @@ Created on Sun Oct 22 10:51:10 2017
 @author: Raissa
 """
 
+from plotly.offline import iplot
 import plotly.plotly as py
 import pandas as pd
 import numpy as np

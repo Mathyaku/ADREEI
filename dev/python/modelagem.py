@@ -5,6 +5,8 @@ Created on Tue Oct 10 21:54:36 2017
 @author: Raissa
 """
 
+
+
 #from random import random 
 import numpy as np
 from kmeans import clusterization
@@ -13,9 +15,24 @@ from pandas import DataFrame
 import pandas as pd
 from read_output import read_output 
 import matplotlib.pyplot as plt
+import random
+
+def count_itens(df, unique_labels):
+    count = [] 
+    for i in unique_labels:
+        count.append(len(df[df['labels'] == i]))
+    return count
+        
+def unique(labels):
+    output = []
+    for x in labels:
+        if x not in output:
+            output.append(x)
+    print(output)
+    return output
 
 #def gen_paths(index_threats_list): 
-
+#lista = random.sample(range(1, 3000), 200)
 index_threats_list= lista    
 #Definição de variaveis
 peso_distancia = 1
@@ -90,16 +107,18 @@ while(not optimal):
         file = open('testfile' + str(label) + '.lp', 'w') 
         
         #Função objetivo
-        file.write('min: ' + str(peso_distancia) + 'dist_total; \n\n\n') #+  str(peso_tempo) + 'tempo_total \n\n\n') 
+        file.write('min: dist_total; \n\n\n') #+  str(peso_tempo) + 'tempo_total \n\n\n') 
         
         #minimizacao da distancia 
         file.write('//Implementa a funcao objetivo \n')
         str_lp ='dist_total >= ' + str(base_distance)
         for i in range(0, len(matrix_distances)):
             for j in range(0, len(matrix_distances)):
-                if matrix_distances[i][j] == float('inf'):
-                    str_lp = str_lp + ' + ' + str(9999999999) + 'X[' + str(i) + '][' + str(j) + ']'
-                else:
+                if j != i:
+#                if matrix_distances[i][j] == float('inf'):
+#                    str_lp = str_lp + ' + ' + str(9999999999) + 'X[' + str(i) + '][' + str(j) + ']'
+                    
+#                else:
                     str_lp = str_lp + ' + ' + str(matrix_distances[i][j]) + 'X[' + str(i) + '][' + str(j) + ']'
         
         file.write(str_lp + ";\n")
@@ -111,9 +130,10 @@ while(not optimal):
             str_lp_total_neg ='1 >= '
             str_lp_total_pos = ''
             for j in range(0, len(matrix_distances)):
+                if j != i:
         #        str_lp = str_lp + ' + X[' + i + '][' + j + ']'
-                str_lp_total_pos = str(str_lp_total_pos) + ' + X[' + str(i) + '][' + str(j) + ']'
-                str_lp_total_neg = str(str_lp_total_neg) + ' + X[' + str(i) + '][' + str(j) + ']'
+                    str_lp_total_pos = str(str_lp_total_pos) + ' + X[' + str(i) + '][' + str(j) + ']'
+                    str_lp_total_neg = str(str_lp_total_neg) + ' + X[' + str(i) + '][' + str(j) + ']'
             str_lp_total_pos  = str_lp_total_pos + '>= 1'
             str_lp_total_neg  = str_lp_total_neg
             file.write(str_lp_total_pos  + ';\n')
@@ -127,8 +147,9 @@ while(not optimal):
             str_lp_total_neg ='1 >='
             str_lp_total_pos = ''
             for i in range(0, len(matrix_distances)):
-                str_lp_total_pos = str(str_lp_total_pos) + ' + X[' + str(i) + '][' + str(j) + ']'
-                str_lp_total_neg = str(str_lp_total_neg) + ' + X[' + str(i) + '][' + str(j) + ']'
+                if j != i:
+                    str_lp_total_pos = str(str_lp_total_pos) + ' + X[' + str(i) + '][' + str(j) + ']'
+                    str_lp_total_neg = str(str_lp_total_neg) + ' + X[' + str(i) + '][' + str(j) + ']'
             str_lp_total_pos  = str_lp_total_pos + '>= 1'
             str_lp_total_neg  = str_lp_total_neg 
             file.write(str_lp_total_pos  + ';\n')
@@ -137,19 +158,31 @@ while(not optimal):
 #        #str_lp_total_pos  = str_lp_total_pos + '>=' + str(num_pontos)
         #str_lp_total_neg  = str_lp_total_neg + '>= -' + str(num_pontos)
         
-    #    file.write('//Visitar exatamente um ponto duas vezes \n')
+        file.write('//Visitar exatamente um ponto duas vezes \n')
     #    
     
         for j in range(0, len(matrix_distances)):
             for i in range(0, len(matrix_distances)):
-                str_lp = '1 >= + X[' + str(j) + '][' + str(i) + '] + X[' + str(i) + '][' + str(j) + ']'
-                file.write(str_lp + ';\n')
+                if j != i:
+                    str_lp = '1 >= + X[' + str(j) + '][' + str(i) + '] + X[' + str(i) + '][' + str(j) + ']'
+                    file.write(str_lp + ';\n')
     
         for j in range(0, len(matrix_distances)):
             for i in range(0, len(matrix_distances)):
-                str_lp = 'X[' + str(i) + '][' + str(j) + '] >= 0'
-                file.write(str_lp + ';\n')
+                if j != i:
+                    str_lp = 'X[' + str(i) + '][' + str(j) + '] >= 0'
+                    file.write(str_lp + ';\n')
             
+        file.write('//Subgrafos \n')
+    #    
+        for k in range(2, len(matrix_distances)):
+            str_lp = str(k) + " -1 >="
+            for j in range(0, k):
+                for i in range(0, k):
+                    if j != i:
+                        str_lp = str_lp + ' + X[' + str(i) + '][' + str(j) + ']'
+            file.write(str_lp + ';\n')
+    
     
     #Restricoes da capacidade do drone
         str_lp =  str(1000) + '>= dist_total'
@@ -157,7 +190,8 @@ while(not optimal):
         
         for i in range(0, len(matrix_distances)):
             for j in range(0, len(matrix_distances)):
-                file.write('int X[' + str(i) + '][' + str(j) + '];\n')
+                if j != i:
+                    file.write('int X[' + str(i) + '][' + str(j) + '];\n')
         
         
         file.close()
@@ -182,23 +216,22 @@ while(not optimal):
 #                        opacity = float(cluster_points['cnt'][i])/float(df_flight_paths['cnt'].max()),
                 )
             )
-        
-        
+    
         optimal = 1
+    layout = dict(
+        title = 'Optimal path between threats',
+        showlegend = False, 
+        geo = dict(
+            projection=dict( type='azimuthal equal area' ),
+            showland = True,
+            landcolor = 'rgb(243, 243, 243)',
+            countrycolor = 'rgb(204, 204, 204)',
+        ),
+    )
+    fig = dict( data=drone_paths , layout=layout )
+#    import plotly
+    plot( fig, filename='d3-path-brazil_1.html')
             
-def count_itens(df, unique_labels):
-    count = [] 
-    for i in unique_labels:
-        count.append(len(df[df['labels'] == i]))
-    return count
-        
-def unique(labels):
-    output = []
-    for x in labels:
-        if x not in output:
-            output.append(x)
-    print(output)
-    return output
 ####### Cemiterio de codigo ###############
 #    n = 200
 #    #pontos aleatorios
