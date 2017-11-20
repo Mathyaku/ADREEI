@@ -70,7 +70,7 @@ def yTrain():
 
 def generateTrainAndTestImages():
  
-    ifile = open('train_labels.csv', "rt")
+    ifile = open('../train_labels.csv', "rt")
     reader = csv.reader(ifile)
     y_train = []
     y_names = []
@@ -99,11 +99,13 @@ def generateTrainAndTestImages():
             shutil.copy("../train/" + y_names[i], "test/0")
     
 
-def removeImages():
+def removeDir():
     shutil.rmtree('train/0/')
     shutil.rmtree('train/1/')
     shutil.rmtree('test/0/')
     shutil.rmtree('test/1/')
+    
+def createDir():
     os.makedirs('train/0')
     os.makedirs('train/1')
     os.makedirs('test/0')
