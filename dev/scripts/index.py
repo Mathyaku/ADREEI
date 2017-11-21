@@ -12,34 +12,41 @@ mu_long, sigma_long = -62, 3
 app = dash.Dash('Hello World')
 
    
-app.layout = html.Div(
-    [
+app.layout = html.Div([
+    html.H2('ADREEI', style={'text-align': 'center'}),
+    html.Div([
         html.Div([
-                dcc.Dropdown(
-                        id='my-dropdown',
-                        options=[
-                {'label': 'Dados 1', 'value': 'data1'},
-                {'label': 'Dados 2', 'value': 'data2'},
-                {'label': 'Dados 3', 'value': 'data3'}
-            ],
-            value='COKE'
-        )],style={'width': '25%', 'display': 'inline-block'}),
+            html.Div([
+            dcc.Dropdown(
+                id='my-dropdown',
+                options=[
+                    {'label': 'Treinar', 'value': 'train'},
+                    {'label': 'Gerar Rotas', 'value': 'route'},
+                    {'label': 'Limpar', 'value': 'clean'}
+                ],
+                value='COKE'
+            )], style={'width': '80%', 'display':'inline-block','vertical-align': 'middle'}),
+            html.Button('Treinar', id='my-button',value='data2')
+        ], style={'width': '20%', 'float': 'left', 'text-align':'center', 'height':'388px'}),
         html.Div([
             dcc.Graph(
                 id='my-graph'
-                )],style={'width': '100%', 'display': 'inline-block'}
-        )
-    ]
-, style={'width': '100%'})
+                )], style={'width': '80%', 'float': 'right', 'margin-top':'-12px'}
+    )], style={'width': '100%', 'height':'388px'}),
+    html.H2('Resultados', style={'text-align': 'center'})
+], style={'width': '100%'})
+
+
 
 
 @app.callback(Output('my-graph', 'figure'), [Input('my-dropdown', 'value')])
 def update_graph(selected_dropdown_value):
     print(selected_dropdown_value)
-    if(selected_dropdown_value == 'data1'):
+    if(selected_dropdown_value == 'train'):
+        
         s_lat = np.random.normal(mu_lat, sigma_lat, 222)
         s_long = np.random.normal(mu_long, sigma_long, 222)
-    elif(selected_dropdown_value == 'data1'):
+    elif(selected_dropdown_value == 'route'):
         s_lat = np.random.normal(mu_lat, sigma_lat, 222)
         s_long = np.random.normal(mu_long, sigma_long, 222)
     else:
@@ -65,16 +72,17 @@ def update_graph(selected_dropdown_value):
             }],
         'layout': {
             'mapbox': {
-                    'accesstoken': (
-                        'pk.eyJ1IjoiY2hyaWRkeXAiLCJhIjoiY2ozcGI1MTZ3M' +
-                        'DBpcTJ3cXR4b3owdDQwaCJ9.8jpMunbKjdq1anXwU5gxIw'
-                    ),
-                    'center': {'lat': median(s_lat), 'lon': median(s_long)},
-                    'zoom': 3.5
+                'accesstoken': (
+                    'pk.eyJ1IjoiY2hyaWRkeXAiLCJhIjoiY2ozcGI1MTZ3M' +
+                    'DBpcTJ3cXR4b3owdDQwaCJ9.8jpMunbKjdq1anXwU5gxIw'
+                ),
+                'center': {'lat': median(s_lat), 'lon': median(s_long)},
+                'zoom': 3.5,
+                'top': 0,
+                'margin-top': 0
             },
-            'margin': {
-                    'l': 0, 'r': 0, 'b': 0, 't': 0
-            }
+            'margin': { 'l': 0, 'r': 0, 'b': 0, 't': 0 },
+            'height': 400
         }
     }
 

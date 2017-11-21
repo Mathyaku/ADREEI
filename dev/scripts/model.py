@@ -19,7 +19,8 @@ from keras.callbacks import CSVLogger
 import readImage
 
 # Setup of train and Test
-#readImage.removeImages()
+#readImage.removeDir()
+#readImage.createDir()
 #readImage.generateTrainAndTestImages()
  
 width = 128
