@@ -32,7 +32,7 @@ def unique(labels):
     return output
 
 #def gen_paths(index_threats_list): 
-#lista = random.sample(range(1, 3000), 200)
+lista = random.sample(range(1, 3000), 200)
 index_threats_list= lista    
 #Definição de variaveis
 peso_distancia = 1
@@ -46,7 +46,8 @@ num_cluster = 10;
 max_carga_drone = 3000; #g
 peso_inseticida = 10; #g por ponto
 param_sec = 0.75;
-max_pontos = max_carga_drone/peso_inseticida
+#max_pontos = max_carga_drone/peso_inseticida
+max_pontos = 20
 
 if vel_med_drone != "" and max_flight_time != "": 
     distancia = vel_med_drone * max_flight_time
