@@ -5,6 +5,8 @@ import dash_html_components as html
 import numpy as np
 from statistics import median
 
+import loadModel
+
 # mean and standard deviation
 mu_lat, sigma_lat = -4.17, 3
 mu_long, sigma_long = -62, 3
@@ -41,9 +43,9 @@ app.layout = html.Div([
 
 @app.callback(Output('my-graph', 'figure'), [Input('my-dropdown', 'value')])
 def update_graph(selected_dropdown_value):
-    print(selected_dropdown_value)
     if(selected_dropdown_value == 'train'):
-        
+        scores = loadModel.train()
+        print(scores)
         s_lat = np.random.normal(mu_lat, sigma_lat, 222)
         s_long = np.random.normal(mu_long, sigma_long, 222)
     elif(selected_dropdown_value == 'route'):
