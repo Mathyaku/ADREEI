@@ -7,8 +7,9 @@ Created on Tue Oct 10 15:30:56 2017
 from keras.models import model_from_json
 from keras.optimizers import Adam
 from keras.preprocessing.image import ImageDataGenerator
+import numpy as np
 
-def train():
+def predict():
     # load json and create model
     json_file = open('cnn_model_modelOficial.json', 'r')
     loaded_model_json = json_file.read()
@@ -29,12 +30,23 @@ def train():
     height = 128
     
     test_data_gen = ImageDataGenerator()
-    test_gen = test_data_gen.flow_from_directory('test', target_size=(width, height), batch_size=689, class_mode='binary')
+    test_gen = test_data_gen.flow_from_directory('test', target_size=(width, height), batch_size=1, class_mode='binary',shuffle=False,seed=0)
     
-    score = loaded_model.evaluate_generator(test_gen,689)
+    predictions = loaded_model.predict_generator(test_gen,689) #loaded_model.evaluate_generator(test_gen,689)
     
-    print("score -> loss: {:.4f} - acc: {:.4f} ".format(score[0], score[1]))
+    predicted_classes = [];
+    for n in predictions:
+        predicted_classes.append(round(n[0]))
+        
+    score = sum(1*(test_gen.classes == predicted_classes))/len(predicted_classes)
     
-    return score
+    print(score)
+
+    return predicted_classes
+
+
+   # print("score -> loss: {:.4f} - acc: {:.4f} ".format(score[0], score[1]))
+    
+   # return score
     
     

@@ -3,13 +3,19 @@ from dash.dependencies import Input, Output
 import dash_core_components as dcc
 import dash_html_components as html
 import numpy as np
+import pandas as pd
+from pandas import DataFrame
 from statistics import median
 
 import loadModel
 
+
 # mean and standard deviation
 mu_lat, sigma_lat = -4.17, 3
 mu_long, sigma_long = -62, 3
+
+df = pd.read_pickle("positions.pkl")
+df = df.loc[1:689,:]
 
 app = dash.Dash('Hello World')
 
@@ -27,8 +33,7 @@ app.layout = html.Div([
                     {'label': 'Limpar', 'value': 'clean'}
                 ],
                 value='COKE'
-            )], style={'width': '80%', 'display':'inline-block','vertical-align': 'middle'}),
-            html.Button('Treinar', id='my-button',value='data2')
+            )], style={'width': '80%', 'display':'inline-block','vertical-align': 'middle'})
         ], style={'width': '20%', 'float': 'left', 'text-align':'center', 'height':'388px'}),
         html.Div([
             dcc.Graph(
@@ -44,33 +49,30 @@ app.layout = html.Div([
 @app.callback(Output('my-graph', 'figure'), [Input('my-dropdown', 'value')])
 def update_graph(selected_dropdown_value):
     if(selected_dropdown_value == 'train'):
-        scores = loadModel.train()
+        scores = loadModel.predict()
         print(scores)
-        s_lat = np.random.normal(mu_lat, sigma_lat, 222)
-        s_long = np.random.normal(mu_long, sigma_long, 222)
     elif(selected_dropdown_value == 'route'):
-        s_lat = np.random.normal(mu_lat, sigma_lat, 222)
-        s_long = np.random.normal(mu_long, sigma_long, 222)
+        s_lat=df.loc[:,1]
+        s_long=df.loc[:,0]
     else:
-        s_lat = np.random.normal(mu_lat, sigma_lat, 222)
-        s_long = np.random.normal(mu_long, sigma_long, 222)
+        s_lat=df.loc[:,1]
+        s_long=df.loc[:,0]
+        rgb = [0,0,200]
     
-    print(s_lat)
-    print(s_long)
     return {
             'data': [{
                 'name': 'Invasora',
                 'lat': s_lat[1:122], 
                 'lon': s_long[1:122], 
                 'type': 'scattermapbox',
-                'marker': dict( size=5, color='rgb(255, 0, 0)')
+                'marker': dict( size=5, color='rgb('+str(rgb[0])+',' +str(rgb[1])+',' +str(rgb[2])+')')
             },
             {
                 'name': 'Não Invasora',
                 'lat': s_lat[122:], 
                 'lon': s_long[122:],
                 'type': 'scattermapbox',
-                'marker': dict( size=5, color='rgb(0, 0, 255)')
+                'marker': dict( size=5, color='rgb('+str(rgb[0])+',' +str(rgb[1])+',' +str(rgb[2])+')')
             }],
         'layout': {
             'mapbox': {
