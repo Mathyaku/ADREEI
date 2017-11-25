@@ -123,7 +123,7 @@ def update_graph(selected_dropdown_value):
             }]
     
     return {
-            'data': data,
+            'data': drone_paths,
         'layout': {
             'mapbox': {
                 'accesstoken': (
