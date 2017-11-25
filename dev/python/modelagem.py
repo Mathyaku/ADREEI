@@ -235,7 +235,8 @@ def gen_paths(index_threats_list):
         fig = dict( data=drone_paths , layout=layout )
         #import plotly
         from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
-        plot( fig, filename='d3-path-brazil_1.html')
+        plot( fig, filename='d3-path-brazil_'+ label +'.html')
+        return drone_paths
 
 ####### Cemiterio de codigo ###############
 #    n = 200
@@ -260,4 +261,4 @@ def gen_paths(index_threats_list):
     #    for i in range(k):
     #        plt.plot(df[df['labels'] == k][0], df[df['labels'] == k][1], color[k])
     #    plt.show()
-    #                
+    #                   
