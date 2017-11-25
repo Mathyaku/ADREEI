@@ -7,12 +7,14 @@ Created on Tue Oct 31 21:10:14 2017
 import re
 #import time
 def read_output(fname):
-#    fname = "saida8.txt" 
+    #fname = "output/saida19.txt" 
     with open(fname) as f:
         content = f.readlines()
     # you may also want to remove whitespace characters like `\n` at the end of each line
     content = [x.strip() for x in content]
     #    print(content)
+    if content[0] ==  "Timeout":
+        return -1
     try:
     #        print(content[len(content)-1])
         num_pontos = int(re.match('[A-Za-z]\[(\d+)+\]\[(\d+)+\] * (\d+)+', content[len(content)-1]).group(1))
