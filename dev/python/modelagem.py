@@ -30,8 +30,7 @@ def unique(labels):
     print(output)
     return output
 
-def gen_paths(index_threats_list = random.sample(range(1, 3000), 200)):
-    index_threats_list = random.sample(range(1, 3000), 200)    
+def gen_paths(index_threats_list = random.sample(range(1, 3000), 50)):
     #Definição de variaveis
     peso_distancia = 1  
     peso_tempo = 0
@@ -251,6 +250,7 @@ def gen_paths(index_threats_list = random.sample(range(1, 3000), 200)):
                 drone_paths.append(
                     dict(
                         type = 'scattermapbox',
+                        name = 'Cluster ' + str(label),
                         lon = [ cluster_points[i][0], cluster_points[path_data[i].index(1)][0] ],
                         lat = [ cluster_points[i][1], cluster_points[path_data[i].index(1)][1] ],
                         mode = 'lines',
@@ -278,37 +278,36 @@ def gen_paths(index_threats_list = random.sample(range(1, 3000), 200)):
         #import plotly
         for label in unique_labels:
             if size_clusters[label] == 2:
+                cor = 'rgb('+str(random.randint(0,255))+','+str(random.randint(0,255))+','+str(random.randint(0,255))+')'
                 cluster_points = (df[df['labels'] == label]).as_matrix()
                 drone_paths.append(
                     dict(
+                        name = 'Cluster ' + str(label),
                         type = 'scattermapbox',
                         lon = [ cluster_points[0][0], cluster_points[1][0] ],
                         lat = [ cluster_points[0][1], cluster_points[1][1] ],
                         mode = 'lines',
                         line = dict(
                             width = 1,
-                            color = colors[label%len(colors)],
+                            color = cor,
                         ),
         #                        opacity = float(cluster_points['cnt'][i])/float(df_flight_paths['cnt'].max()),
                     )
                 )
             if size_clusters[label] == 1:
+                cor = 'rgb('+str(random.randint(0,255))+','+str(random.randint(0,255))+','+str(random.randint(0,255))+')'
                 cluster_points = (df[df['labels'] == label]).as_matrix()
                 drone_paths.append(
                     dict(
+                        name = 'Cluster ' + str(label),
                         type = 'scattermapbox',
                         lon = cluster_points[0][0],
                         lat = cluster_points[0][1],
                         hoverinfo = 'text',
                         text = str(cluster_points[0][0]) + "_" + str(cluster_points[0][1]),
-                        mode = 'markers',
                         marker = dict( 
                             size=3, 
-                            color='rgb(255, 0, 0)',
-                            line = dict(
-                                width=3,
-                                color='rgba(68, 68, 68, 0)'
-                            )
+                            color=cor
                         ))
                 )
                 
@@ -316,7 +315,11 @@ def gen_paths(index_threats_list = random.sample(range(1, 3000), 200)):
     
 #    from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
 #    plot( fig, filename='d3-path-brazil_1.html')
-    return drone_paths
+                            
+    result = []
+    result.append(drone_paths)
+    result.append(len(size_clusters))
+    return result
 
 ####### Cemiterio de codigo ###############
 #    n = 200x
